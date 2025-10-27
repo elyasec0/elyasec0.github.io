@@ -1,0 +1,572 @@
+/* Reset */
+* { margin:0; padding:0; box-sizing:border-box; font-family: 'Roboto', sans-serif; }
+html { font-size: 17px; }
+
+html { scroll-behavior: smooth; }
+
+/* Theme Variables */
+:root {
+    /* Base inspired by al-aqua.dev vibe with aqua/teal accents while keeping dark UI */
+    --bg: #0A0A0A;
+    --bg-soft-1: #0E0E10;
+    --bg-soft-2: #141417;
+    --text: #E5E5E5;
+    --muted: #CCCCCC;
+    --border: #333333;
+    --accent: #00E5FF; /* aqua */
+    --accent-2: #00B8D4; /* deeper aqua */
+    --danger: #FF003C; /* legacy accent kept for subtle highlights if needed */
+    --shadow-accent: rgba(0, 229, 255, 0.3);
+}
+
+/* Loading Animation */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+}
+
+.loading-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 3px solid rgba(0, 229, 255, 0.1);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Global colors */
+body { 
+    background: var(--bg); 
+    color: var(--text); 
+    line-height:1.6;
+    overflow-x: hidden;
+}
+
+/* Global page gutters to prevent edge-collisions */
+section, footer, header {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+@media (max-width: 480px) {
+    section, footer, header { padding-left: 16px; padding-right: 16px; }
+}
+
+/* Background Animation */
+.bg-animation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, var(--bg), var(--bg-soft-1), var(--bg-soft-2));
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
+    z-index: -1;
+    opacity: 0.82; /* السماح بظهور الصورة أسفلها */
+}
+
+/* Background Image Layer */
+.bg-image {
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    background-image: url('images/Background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.50; /* مطفي لكن أوضح قليلاً */
+    filter: blur(2px) saturate(115%);
+    mix-blend-mode: normal; /* حتى لا يؤثر على تباين النص */
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Terminal Style */
+.terminal-line {
+    margin-bottom: 20px;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+}
+
+.terminal-heading {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+}
+
+.prompt {
+    color: var(--accent);
+    margin-right: 10px;
+}
+
+.command {
+    color: var(--accent-2);
+}
+
+.terminal-icon {
+    margin-right: 8px;
+    font-size: 18px;
+}
+
+/* Links */
+a { color: var(--accent); text-decoration:none; transition: all 0.3s ease; }
+a:hover { text-decoration:underline; transform: translateY(-2px); }
+
+/* Floating Top Nav */
+.floating-nav {
+    position: fixed;
+    top: 16px; left: 50%; transform: translateX(-50%);
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    background: rgba(10, 14, 16, 0.82);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.04);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    z-index: 10;
+    border: 1px solid rgba(255,255,255,0.06);
+}
+
+.nav-btn {
+    height: 44px; width: 44px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    color: var(--text);
+    background: rgba(255,255,255,0.02);
+    transition: all 0.3s ease;
+}
+.nav-btn:hover { background: rgba(255,255,255,0.06); border-color: var(--accent); transform: translateY(-1px) scale(1.02); }
+.nav-btn.active { background: var(--accent); color: #051014; box-shadow: 0 6px 16px var(--shadow-accent); border-color: var(--accent); }
+.lucide-icon { width: 28px; height: 28px; }
+.nav-path { font-size: 0.9rem; color: var(--text); opacity: 0.9; }
+.hide-sm { display: none; }
+
+@media (min-width: 768px) { .hide-sm { display: inline; } }
+
+/* Simple tooltips for nav buttons */
+.nav-btn { position: relative; }
+.nav-btn[title]::after {
+  content: attr(title);
+  position: absolute;
+  bottom: -34px; left: 50%; transform: translateX(-50%);
+  background: rgba(10,14,16,0.92);
+  color: var(--text);
+  border: 1px solid var(--border);
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+  opacity: 0; pointer-events: none;
+  transition: opacity .2s ease, transform .2s ease;
+}
+.nav-btn:hover::after { opacity: 1; transform: translateX(-50%) translateY(-2px); }
+
+
+/* Buttons */
+.btn { 
+    display:inline-block; 
+    padding:0.7em 1.3em; 
+    border:1px solid var(--accent); 
+    border-radius:5px; 
+    transition:0.3s; 
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-animate {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-animate::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, var(--shadow-accent), transparent);
+    transition: left 0.5s;
+}
+
+.btn-animate:hover::before {
+    left: 100%;
+}
+
+.btn:hover { 
+    background: var(--accent); 
+    color: #051014; 
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px var(--shadow-accent);
+}
+
+.btn-download { 
+    background: var(--accent); 
+    color: #051014; 
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-icon {
+    transition: transform 0.3s;
+}
+
+.btn-download:hover .btn-icon {
+    transform: translateY(2px);
+}
+
+/* Hero Section */
+.hero { 
+    display:flex; 
+    flex-wrap:wrap; 
+    justify-content:space-between; 
+    align-items:center; 
+    padding:60px 20px; 
+    min-height: 100vh;
+}
+
+.hero-text { flex:1; min-width:280px; }
+
+.hero-text h1 { 
+    font-size:2.5em; 
+    margin-bottom:0.3em; 
+    text-shadow: 0 0 20px var(--shadow-accent);
+}
+
+.hero-text h2 { 
+    font-size:1.5em; 
+    margin-bottom:0.6em; 
+    color: var(--accent-2); 
+}
+
+.hero-text p { 
+    max-width:600px; 
+    margin-bottom:1em; 
+}
+
+.hero-buttons { 
+    margin-top:1em; 
+    display:flex; 
+    gap:10px; 
+    flex-wrap: wrap;
+}
+
+.hero-image img { 
+    width:250px; 
+    border-radius:15px; 
+    border:2px solid var(--accent);
+    transition: all 0.3s ease;
+}
+
+.profile-glow {
+    box-shadow: 0 0 30px var(--shadow-accent);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 30px var(--shadow-accent); }
+    50% { box-shadow: 0 0 50px rgba(0,229,255,0.6); }
+    100% { box-shadow: 0 0 30px var(--shadow-accent); }
+}
+
+/* Fade In Animation */
+.typewriter-delay {
+    opacity: 0;
+    animation: fadeIn 1s ease-in 0.5s forwards;
+}
+
+.typewriter-delay-2 {
+    opacity: 0;
+    animation: fadeIn 1s ease-in 1s forwards;
+}
+
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+/* Skills Section */
+#skills { 
+    padding:60px 20px; 
+    text-align:center; 
+}
+
+.skills-grid { 
+    display:grid; 
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); 
+    gap:20px; 
+    margin-top:30px; 
+}
+
+.skill-card { 
+    background: rgba(255,255,255,0.05); 
+    padding:20px; 
+    border-radius:10px; 
+    border:1px solid var(--border); 
+    transition:all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.skill-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+}
+
+.skill-card:hover::before {
+    transform: translateX(0);
+}
+
+.skill-card:hover { 
+    background: rgba(0,229,255,0.08); 
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,229,255,0.18);
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.skill-level {
+    margin-top: 10px;
+    height: 4px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.skill-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    border-radius: 2px;
+    transition: width 1s ease;
+}
+
+.brand-badges { 
+  display: flex; 
+  flex-wrap: wrap; 
+  gap: 8px; 
+  margin: 12px 0 10px; 
+  justify-content: center;
+  align-items: center;
+}
+.si-badge { 
+  width: 32px; 
+  height: 32px; 
+  border-radius: 6px; 
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border);
+  padding: 5px; 
+  margin: 0;
+  object-fit: contain;
+  transition: all 0.3s ease;
+  display: block;
+}
+
+.si-badge:hover {
+  transform: translateY(-2px) scale(1.1);
+  border-color: var(--accent);
+  box-shadow: 0 4px 12px rgba(0,229,255,0.3);
+}
+
+/* Fallback for broken images */
+img[src*="simpleicons"], 
+img[src*="tryhackme"] {
+  background: rgba(255,255,255,0.03);
+  position: relative;
+}
+
+img[src*="simpleicons"]:after,
+img[src*="tryhackme"]:after {
+  content: '⚠️';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+
+@media (max-width: 768px) {
+  .brand-badges { gap: 8px; }
+  .si-badge { width: 28px; height: 28px; padding: 4px; }
+}
+
+/* Projects Section */
+#projects { 
+    padding:60px 20px; 
+    text-align:center; 
+}
+
+.projects-grid { 
+    display:grid; 
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); 
+    gap:20px; 
+    margin-top:30px; 
+}
+
+.project-card { 
+    background: rgba(255,255,255,0.05); 
+    padding:20px; 
+    border-radius:10px; 
+    border:1px solid var(--border); 
+    transition:all 0.3s ease;
+    position: relative;
+}
+
+.project-card:hover { 
+    transform: translateY(-5px); 
+    background: rgba(0,229,255,0.08); 
+    box-shadow: 0 10px 30px rgba(0,229,255,0.18);
+}
+
+.project-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.project-stats {
+    display: flex;
+    gap: 15px;
+    margin: 10px 0;
+    font-size: 14px;
+    color: var(--muted);
+}
+
+.project-card .tech { 
+    font-size:0.85em; 
+    color: var(--muted); 
+    margin:10px 0; 
+}
+
+.contact-container { 
+    display:flex; 
+    flex-wrap:wrap; 
+    gap:20px; 
+    justify-content:center; 
+}
+
+.contact_me {
+    margin-top: 20px;
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 15px;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.social-link:hover {
+    background: rgba(0,229,255,0.08);
+    border-color: var(--accent);
+    transform: translateY(-2px);
+}
+
+.brand-icon {
+    width: 18px;
+    height: 18px;
+    display: inline-block;
+}
+
+/* TryHackMe Badge */
+.tryhackme-badge {
+    margin-top: 16px;
+    display: flex;
+    justify-content: center;
+}
+.tryhackme-badge img {
+    height: 72px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.04);
+}
+
+
+/* Footer */
+footer { 
+    text-align:center; 
+    padding:20px; 
+    background: var(--bg); 
+    border-top:1px solid var(--border); 
+    margin-top:50px; 
+}
+
+/* Reveal Animation */
+.reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s ease;
+}
+
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.card-animate {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s ease;
+}
+
+.card-animate.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Responsive */
+@media(max-width:768px){ 
+    .hero { flex-direction:column; text-align:center; } 
+    .hero-image { margin-top:20px; }
+    .hero-text h1 { font-size:2em; }
+    .skills-grid, .projects-grid { grid-template-columns:1fr; }
+}
+
+@media (max-width: 520px) {
+  .tryhackme-badge img { height: 56px; }
+}

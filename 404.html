@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found | Elyas Mohammed</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="images/profile.jpg">
+    <style>
+        .error-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .error-code {
+            font-size: 120px;
+            font-weight: 700;
+            color: var(--accent);
+            line-height: 1;
+            margin-bottom: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            text-shadow: 0 0 30px var(--shadow-accent);
+        }
+        
+        .error-message {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: var(--text);
+        }
+        
+        .error-description {
+            font-size: 16px;
+            color: var(--muted);
+            margin-bottom: 30px;
+            max-width: 500px;
+        }
+        
+        .error-terminal {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'JetBrains Mono', monospace;
+            text-align: left;
+            max-width: 600px;
+        }
+        
+        .error-terminal-line {
+            color: var(--muted);
+            margin: 5px 0;
+        }
+        
+        .error-terminal-line .prompt {
+            color: var(--accent);
+        }
+        
+        .error-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        @media (max-width: 768px) {
+            .error-code {
+                font-size: 80px;
+            }
+            
+            .error-message {
+                font-size: 20px;
+            }
+            
+            .error-description {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+    <div class="bg-image"></div>
+    
+    <div class="error-container">
+        <div class="error-code">404</div>
+        <h1 class="error-message">Page Not Found</h1>
+        <p class="error-description">
+            The page you're looking for doesn't exist or has been moved.
+        </p>
+        
+        <div class="error-terminal">
+            <div class="error-terminal-line"><span class="prompt">$</span> ls -la /requested/page</div>
+            <div class="error-terminal-line">ls: cannot access '/requested/page': No such file or directory</div>
+            <div class="error-terminal-line"><span class="prompt">$</span> echo "Error: 404"</div>
+            <div class="error-terminal-line">Error: 404</div>
+        </div>
+        
+        <div class="error-buttons">
+            <a href="/" class="btn btn-animate">
+                <svg width="20" height="20" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 5px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7"></path>
+                    <path d="M9 22V12h6v10"></path>
+                    <path d="M2 22h20"></path>
+                </svg>
+                Go Home
+            </a>
+            <a href="/#projects" class="btn btn-animate">
+                <svg width="20" height="20" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 5px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+                    <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+                    <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+                    <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+                </svg>
+                View Projects
+            </a>
+        </div>
+    </div>
+</body>
+</html>

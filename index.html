@@ -35,6 +35,15 @@
     <link rel="preload" href="images/Background.jpg" as="image">
     
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-XXXXXXXXXX');
+    </script>
 </head>
 <body>
     <!-- Loading Overlay -->
@@ -49,11 +58,16 @@
     
     <!-- Floating Top Nav -->
     <nav class="floating-nav" aria-label="Top Navigation">
+        <div class="nav-progress" id="nav-progress"></div>
         <a id="home_link" aria-label="Home page" href="#top" class="nav-btn" title="Home">
             <!-- lucide: home -->
             <svg width="24" height="24" stroke="currentColor" stroke-width="2" class="lucide-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7"></path><path d="M9 22V12h6v10"></path><path d="M2 22h20"></path></svg>
         </a>
-        <a id="projects_link" aria-label="Projects" href="#skills" class="nav-btn" title="Projects">
+        <a id="skills_link" aria-label="Skills" href="#skills" class="nav-btn" title="Skills">
+            <!-- lucide: zap -->
+            <svg width="24" height="24" stroke="currentColor" stroke-width="2" class="lucide-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+        </a>
+        <a id="projects_link" aria-label="Projects" href="#projects" class="nav-btn" title="Projects">
             <!-- lucide: grid-3x3 -->
             <svg width="24" height="24" stroke="currentColor" stroke-width="2" class="lucide-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect></svg>
         </a>
@@ -142,33 +156,46 @@
 
     <!-- Projects Section -->
     <section id="projects" class="reveal">
-        <h2>Projects</h2>
-        <div class="projects-grid">
-            <div class="project-card card-animate">
-                <div class="project-header">
-                    <span class="terminal-icon">🐍</span>
-                    <h3>SubFilter.py</h3>
-                </div>
-                <p>Automated Subdomain Filtering and Validation Tool</p>
-                <p class="tech">Python, Regex, API</p>
-                <div class="project-stats">
-                    <span>⭐ 150</span>
-                    <span>🍴 30</span>
-                </div>
-                <a href="https://github.com/elyasec0/SubFilter" class="btn btn-animate" target="_blank">View on GitHub</a>
+        <h2>Projects <span id="project-count-badge" class="project-count-badge" style="display: none;"></span></h2>
+        
+        <!-- Projects Stats -->
+        <div class="projects-stats" id="projects-stats">
+            <div class="stat-card">
+                <span class="stat-number" id="total-stars">0</span>
+                <span class="stat-label">Total Stars</span>
             </div>
-            <div class="project-card card-animate">
-                <div class="project-header">
-                    <span class="terminal-icon">📝</span>
-                    <h3>CTF Writeups</h3>
-                </div>
-                <p>Selected vulnerability writeups and exploitation steps</p>
-                <p class="tech">Writeups, POC, Exploit</p>
-                <div class="project-stats">
-                    <span>📄 25</span>
-                    <span>🏆 5</span>
-                </div>
-                <a href="#" class="btn btn-animate">View Details</a>
+            <div class="stat-card">
+                <span class="stat-number" id="top-language">-</span>
+                <span class="stat-label">Top Language</span>
+            </div>
+        </div>
+        
+        <!-- Search and Filter -->
+        <div class="projects-controls">
+            <div class="search-box">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.35-4.35"></path>
+                </svg>
+                <input type="text" id="search-input" placeholder="Search projects by name or description...">
+            </div>
+            <div class="filter-controls">
+                <select id="language-filter">
+                    <option value="all">All Languages</option>
+                </select>
+                <select id="sort-filter">
+                    <option value="updated">Recently Updated</option>
+                    <option value="stars">Most Stars</option>
+                    <option value="name">Name (A-Z)</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="projects-grid" id="projects-container">
+            <!-- Projects will be loaded dynamically from GitHub API -->
+            <div class="loading-projects">
+                <div class="loading-spinner"></div>
+                <p>Loading projects...</p>
             </div>
         </div>
     </section>
@@ -195,14 +222,35 @@
                         <img class="brand-icon" src="https://cdn.simpleicons.org/tryhackme/00E5FF" alt="TryHackMe" loading="lazy"> TryHackMe
                     </a>
                 </div>
-                <div class="tryhackme-badge">
-                    <a href="https://tryhackme.com/p/elyasec0" target="_blank" rel="noopener noreferrer">
-                        <img src="https://tryhackme-badges.s3.amazonaws.com/elyasec0.png" alt="TryHackMe badge for elyasec0" loading="lazy">
-                    </a>
+                
+                <!-- GitHub Activity Stats -->
+                <div class="github-activity">
+                    <h3>GitHub Activity</h3>
+                    <img src="https://ghchart.rshah.org/00E5FF/elyasec0" alt="GitHub Contribution Chart" loading="lazy">
+                </div>
+                
+                <!-- Badges Section -->
+                <div class="badges-section">
+                    <h3>Achievements & Badges</h3>
+                    <div class="badges-grid">
+                        <!-- TryHackMe Badge -->
+                        <div class="badge-item">
+                            <a href="https://tryhackme.com/p/elyasec0" target="_blank" rel="noopener noreferrer">
+                                <img src="https://tryhackme-badges.s3.amazonaws.com/elyasec0.png" alt="TryHackMe badge" loading="lazy">
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
+
+    <!-- Back to Top Button -->
+    <button id="back-to-top" class="back-to-top" aria-label="Back to top">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="18 15 12 9 6 15"></polyline>
+        </svg>
+    </button>
 
     <!-- Footer -->
     <footer>

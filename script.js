@@ -14,15 +14,30 @@ function reveal() {
         }
     });
     
-    cards.forEach((card, index) => {
+    let visibleCardIndex = 0;
+
+    cards.forEach((card) => {
         const windowHeight = window.innerHeight;
         const elementTop = card.getBoundingClientRect().top;
         const elementVisible = 150;
         
-        if (elementTop < windowHeight - elementVisible) {
+        if (elementTop < windowHeight - elementVisible && !card.classList.contains('active')) {
+            if (card.dataset.revealScheduled === 'true') {
+                return;
+            }
+
+            const delay = card.classList.contains('priority-card')
+                ? 0
+                : Math.min(visibleCardIndex * 45, 180);
+
+            card.dataset.revealScheduled = 'true';
+
             setTimeout(() => {
                 card.classList.add('active');
-            }, index * 100);
+                card.dataset.revealScheduled = 'false';
+            }, delay);
+
+            visibleCardIndex += 1;
         }
     });
 }
@@ -61,13 +76,19 @@ document.querySelectorAll('.btn-download').forEach(button => {
 function initFloatingNav() {
     const btnHome = document.getElementById('home_link');
     const btnSkills = document.getElementById('skills_link');
+    const btnExperience = document.getElementById('experience_link');
+    const btnCertifications = document.getElementById('certifications_link');
     const btnProjects = document.getElementById('projects_link');
+    const btnAdditional = document.getElementById('additional_link');
     const btnContact = document.getElementById('contact_link');
     const pathSpan = document.querySelector('.nav-path');
     const sections = [
         { id: 'top', el: document.getElementById('top'), btn: btnHome, path: '~/elyasec0/home' },
         { id: 'skills', el: document.getElementById('skills'), btn: btnSkills, path: '~/elyasec0/skills' },
+        { id: 'experience', el: document.getElementById('experience'), btn: btnExperience, path: '~/elyasec0/experience' },
+        { id: 'certifications', el: document.getElementById('certifications'), btn: btnCertifications, path: '~/elyasec0/certifications' },
         { id: 'projects', el: document.getElementById('projects'), btn: btnProjects, path: '~/elyasec0/projects' },
+        { id: 'additional', el: document.getElementById('additional'), btn: btnAdditional, path: '~/elyasec0/additional' },
         { id: 'contact_me', el: document.getElementById('contact_me'), btn: btnContact, path: '~/elyasec0/contact' }
     ].filter(s => s.el && s.btn);
 
@@ -77,33 +98,60 @@ function initFloatingNav() {
         });
     }
 
+    const getSectionRanges = () => {
+        const navOffset = 110;
+
+        return sections.map((section, index) => {
+            const start = section.id === 'top'
+                ? 0
+                : Math.max(0, section.el.offsetTop - navOffset);
+
+            const nextSection = sections[index + 1];
+            const end = nextSection
+                ? Math.max(start, nextSection.el.offsetTop - navOffset - 1)
+                : document.documentElement.scrollHeight;
+
+            return {
+                ...section,
+                start,
+                end
+            };
+        });
+    };
+
     const setActive = (targetId) => {
-        [btnHome, btnSkills, btnProjects, btnContact].forEach(b => b && b.classList.remove('active'));
+        [btnHome, btnSkills, btnExperience, btnCertifications, btnProjects, btnAdditional, btnContact].forEach(b => b && b.classList.remove('active'));
         const s = sections.find(x => x.id === targetId);
         if (s && s.btn) s.btn.classList.add('active');
         if (pathSpan && s) {
             let seg = 'home';
             if (s.id === 'top') seg = 'home';
             else if (s.id === 'skills') seg = 'skills';
+            else if (s.id === 'experience') seg = 'experience';
+            else if (s.id === 'certifications') seg = 'certifications';
             else if (s.id === 'projects') seg = 'projects';
+            else if (s.id === 'additional') seg = 'additional';
             else if (s.id === 'contact_me') seg = 'contact';
             pathSpan.innerHTML = `<span class="hide-sm">~/elyasec0</span>/${seg}`;
         }
     };
 
     const onScroll = () => {
-        const y = window.scrollY + window.innerHeight * 0.35;
+        const y = window.scrollY + 120;
+        const ranges = getSectionRanges();
         let current = 'top';
-        sections.forEach(s => {
-            const rect = s.el.getBoundingClientRect();
-            const top = rect.top + window.scrollY;
-            if (y >= top) current = s.id;
+        ranges.forEach(section => {
+            if (y >= section.start && y <= section.end) {
+                current = section.id;
+            }
         });
+
         setActive(current);
     };
 
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
 }
 
 // TryHackMe Badge auto-refresh
